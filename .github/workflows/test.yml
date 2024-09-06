@@ -1,14 +1,10 @@
-name: Solidity Tests
+name: Contract Tests
 
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
-
-env:
-  ACCOUNT1KEY: ${{ secrets.ACCOUNT1KEY }}
-  AMOYURL: ${{ secrets.AMOYURL }}
 
 jobs:
   test:
