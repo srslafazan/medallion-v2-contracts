@@ -1,6 +1,6 @@
 # <h1 align="center"> Medallion Contracts v3 </h1>
 
-[![CI](https://github.com/srslafazan/medallion-v2-contracts/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/srslafazan/medallion-v2-contracts/actions/workflows/ci.yml)
+[![Contract Tests](https://github.com/srslafazan/medallion-v3-contracts/actions/workflows/test.yml/badge.svg)](https://github.com/srslafazan/medallion-v3-contracts/actions/workflows/test.yml)
 
 ![Medallion Protocol Diagram](https://github.com/user-attachments/assets/95cc4cd1-b8cd-43be-b6d3-6999140bdcfc)
 
