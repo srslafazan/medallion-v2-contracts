@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-watcher";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.26",
+  solidity: "0.8.27",
   networks: {
     hardhat: {
       loggingEnabled: process.env.LOG_LEVEL === "debug", // Enables detailed logging on the Hardhat network
