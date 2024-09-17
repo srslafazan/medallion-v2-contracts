@@ -8,6 +8,9 @@ contract DIDRegistry {
     }
 
     mapping(string => DID) private dids;
+    mapping(address => DID) private addressToDid;
+
+    mapping(address => address[]) private delegates;
 
     event DIDRegistered(
         string indexed did,
@@ -24,6 +27,8 @@ contract DIDRegistry {
         address indexed previousOwner,
         address indexed newOwner
     );
+    event DelegateRegistered(address indexed account, address indexed delegate);
+    event DelegateVoided(address indexed account, address indexed delegate);
 
     modifier onlyOwner(string memory did) {
         require(
@@ -60,5 +65,28 @@ contract DIDRegistry {
 
         DID memory didRecord = dids[did];
         return (didRecord.owner, didRecord.document);
+    }
+
+    function registerDelegate(address account, address delegate) public {
+        require(
+            msg.sender == account || msg.sender == addressToDid[account].owner,
+            "Not authorized"
+        );
+        delegates[account].push(delegate);
+        emit DelegateRegistered(account, delegate);
+    }
+
+    function voidDelegate(address delegate) public {
+        address[] storage accountDelegates = delegates[msg.sender];
+        for (uint i = 0; i < accountDelegates.length; i++) {
+            if (accountDelegates[i] == delegate) {
+                accountDelegates[i] = accountDelegates[
+                    accountDelegates.length - 1
+                ];
+                accountDelegates.pop();
+                emit DelegateVoided(msg.sender, delegate);
+                break;
+            }
+        }
     }
 }

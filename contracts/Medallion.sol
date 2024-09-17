@@ -2,8 +2,12 @@
 pragma solidity ^0.8.19;
 
 import "./MedallionDIDRegistry.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+import {IEAS, AttestationRequest, AttestationRequestData} from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
+import {SchemaRegistry} from "@ethereum-attestation-service/eas-contracts/contracts/SchemaRegistry.sol";
+import {SchemaResolver} from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
+import {NO_EXPIRATION_TIME, EMPTY_UID} from "@ethereum-attestation-service/eas-contracts/contracts/Common.sol";
 
 // interface MedallionAchievementContract {
 //     function register(string memory did, address account, string memory document) external;
@@ -12,19 +16,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //     function createSchema(bytes32 schema) external;
 // }
 
-contract Medallion is ERC721, Ownable{
+contract Medallion is Ownable {
     DIDRegistry public didRegistry;
     // MedallionAchievementContract public achievementContract;
 
-//a very basic Issuer structure. will have a more complex structure.
-      struct Issuer {
+    //a very basic Issuer structure. will have a more complex structure.
+    struct Issuer {
         bool isIssuer;
         bool isActive;
     }
 
     mapping(address => Issuer) public issuers;
 
-    constructor(address _didRegistry) Ownable(msg.sender) ERC721("Medallion", "MDL") {
+    constructor(address _didRegistry) Ownable(msg.sender) {
         // address _achievementContract
         didRegistry = DIDRegistry(_didRegistry);
         // achievementContract = MedallionAchievementContract(_achievementContract);
@@ -35,9 +39,12 @@ contract Medallion is ERC721, Ownable{
         _;
     }
 
-
     modifier onlyIssuer() {
-        require(issuers[msg.sender].isIssuer == true && issuers[msg.sender].isActive == true, "Only active issuers can perform this action");
+        require(
+            issuers[msg.sender].isIssuer == true &&
+                issuers[msg.sender].isActive == true,
+            "Only active issuers can perform this action"
+        );
         _;
     }
 
@@ -55,7 +62,6 @@ contract Medallion is ERC721, Ownable{
 
     function registerAchiever(address achiever) public onlyIssuer {
         // Mint a new Medallion token to the Achiever
-        
     }
 
     function register(
@@ -66,13 +72,13 @@ contract Medallion is ERC721, Ownable{
         return didRegistry.register(_did, _account, _document);
     }
 
-    // function registerDelegate(address account, address delegate) external {
-    //     didRegistry.registerDelegate(account, delegate);
-    // }
+    function registerDelegate(address account, address delegate) external {
+        didRegistry.registerDelegate(account, delegate);
+    }
 
-    // function voidDelegate(address delegate) external {
-    //     didRegistry.voidDelegate(delegate);
-    // }
+    function voidDelegate(address delegate) external {
+        didRegistry.voidDelegate(delegate);
+    }
 
     // function issue(address recipient, bytes32 credential) external {
     //     achievementContract.issue(recipient, credential);
@@ -82,7 +88,20 @@ contract Medallion is ERC721, Ownable{
     //     achievementContract.revoke(recipient, credential);
     // }
 
-    // function createSchema(bytes32 schema) external {
-    //     achievementContract.createSchema(schema);
-    // }
+    function createSchema(bytes32 schema) external {
+        // achievementContract.createSchema(schema);
+        // Create a new SchemaResolver instance
+        SchemaResolver schemaResolver = new SchemaResolver(_eas);
+
+        // Register the schema with EAS
+        bytes32 schemaId = _eas.registerSchema(
+            string(abi.encodePacked("Medallion Schema: ", schema)),
+            schemaResolver,
+            true, // revocable
+            true // updatable
+        );
+
+        // Emit an event or store the schemaId as needed
+        emit SchemaCreated(schemaId, schema);
+    }
 }

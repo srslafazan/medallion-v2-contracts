@@ -1,8 +1,11 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { DIDRegistry, Medallion } from "../typechain-types";
+
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 describe("TestMedallion", function () {
-  let medallion, registry;
+  let medallion: Medallion;
+  let registry: DIDRegistry;
   let owner;
   const ownerAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
   const registryAddress = "0xBB1fFDA6c47DdF1E065D8AA7077a2D7bB7c54652";

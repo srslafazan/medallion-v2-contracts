@@ -31,5 +31,11 @@
     "ts-node": "^10.9.2",
     "typechain": "^8.3.0",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@ethereum-attestation-service/eas-contracts": "^1.7.1",
+    "@ethereum-attestation-service/eas-sdk": "^2.6.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "ethers-types": "^3.17.2"
   }
 }
