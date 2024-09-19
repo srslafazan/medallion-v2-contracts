@@ -1,4 +1,4 @@
-# <h1 align="center"> Medallion Contracts v3 </h1>
+# <h1 align="center"> Medallion Contracts v2 </h1>
 
 ![Medallion Protocol Diagram](https://github.com/user-attachments/assets/95cc4cd1-b8cd-43be-b6d3-6999140bdcfc)
 
